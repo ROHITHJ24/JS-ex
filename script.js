@@ -24,7 +24,7 @@ function createTaskElement(taskText) {
     let li = document.createElement("li");
     li.textContent = taskText;
 
-    // Edit Button
+    // Edit Buttongit
     let editBtn = document.createElement("button");
     editBtn.innerHTML = "Edit";
     editBtn.classList.add("edit-btn");
