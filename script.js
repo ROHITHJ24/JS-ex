@@ -32,7 +32,7 @@ function createTaskElement(taskText) {
         editTask(li);
     };
 
-    // Delete Button
+  
     let deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "Close";
     deleteBtn.classList.add("delete-btn");
