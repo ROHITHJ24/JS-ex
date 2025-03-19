@@ -241,5 +241,5 @@ ul li.checked {
 }
 
 ul li.checked::before {
-    background-image: url(/assets/checked.png);
+   background-image: url(/assets/checked.png);
 }
