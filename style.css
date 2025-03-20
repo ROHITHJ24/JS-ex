@@ -21,8 +21,8 @@ main {
     padding: 20px;
 }
 h2{
-background-color: rgb(54, 54, 53);
-color: white;
+background-color: orange;
+
 border-radius: 5px;
 padding: 10px;
     display: flex;
