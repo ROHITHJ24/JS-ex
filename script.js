@@ -1,7 +1,7 @@
 const inputbox = document.getElementById("input-box");
 const listitems = document.getElementById("list-items");
+const taskCounter = document.getElementById("task-counter"); // Counter for completed tasks
 
-// Load tasks from Local Storage when the page loads
 document.addEventListener("DOMContentLoaded", loadTasks);
 
 function addTask() {
@@ -11,7 +11,9 @@ function addTask() {
     }
 
     let taskText = inputbox.value.trim();
-    let li = createTaskElement(taskText);
+    let createdDate = new Date().toLocaleDateString();
+
+    let li = createTaskElement(taskText, createdDate, false);
 
     listitems.appendChild(li);
     saveTasks();
@@ -19,12 +21,18 @@ function addTask() {
     inputbox.value = "";
 }
 
-
-function createTaskElement(taskText) {
+function createTaskElement(taskText, createdDate, isCompleted) {
     let li = document.createElement("li");
-    li.textContent = taskText;
+    if (isCompleted) li.classList.add("checked");
 
-    // Edit Buttongit
+    let taskContent = document.createElement("span");
+    taskContent.classList.add("task-content");
+    taskContent.textContent = taskText;
+
+    let taskDate = document.createElement("span");
+    taskDate.classList.add("task-date");
+    taskDate.textContent = `(${createdDate})`;
+
     let editBtn = document.createElement("button");
     editBtn.innerHTML = "Edit";
     editBtn.classList.add("edit-btn");
@@ -32,7 +40,6 @@ function createTaskElement(taskText) {
         editTask(li);
     };
 
-  
     let deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "Close";
     deleteBtn.classList.add("delete-btn");
@@ -41,41 +48,48 @@ function createTaskElement(taskText) {
         saveTasks();
     };
 
+    li.appendChild(taskContent);
+    li.appendChild(taskDate);
     li.appendChild(editBtn);
     li.appendChild(deleteBtn);
 
     return li;
 }
 
-// Function to Edit a Task
 function editTask(li) {
-    let newText = prompt("Edit your task:", li.firstChild.textContent);
+    let newText = prompt("Edit your task:", li.querySelector(".task-content").textContent);
     if (newText !== null && newText.trim() !== "") {
-        li.firstChild.textContent = newText;
+        li.querySelector(".task-content").textContent = newText;
         saveTasks();
     }
 }
 
-
 function saveTasks() {
     let tasks = [];
     document.querySelectorAll("#list-items li").forEach(li => {
-        tasks.push(li.firstChild.textContent);
-        
+        let taskText = li.querySelector(".task-content").textContent;
+        let taskDate = li.querySelector(".task-date").textContent;
+        let isCompleted = li.classList.contains("checked");
+        tasks.push({ text: taskText, date: taskDate, completed: isCompleted });
     });
     localStorage.setItem("tasks", JSON.stringify(tasks));
+    updateTaskCounter();
 }
 
-// Function to Load Tasks from Local Storage
 function loadTasks() {
     let storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    storedTasks.forEach(taskText => {
-        let li = createTaskElement(taskText);
+    storedTasks.forEach(task => {
+        let li = createTaskElement(task.text, task.date.replace(/[()]/g, ""), task.completed);
         listitems.appendChild(li);
     });
+    updateTaskCounter();
 }
 
-// Event listener for marking tasks as completed
+function updateTaskCounter() {
+    let completedTasks = document.querySelectorAll("#list-items li.checked").length;
+    taskCounter.textContent = `Completed Tasks: ${completedTasks}`;
+}
+
 listitems.addEventListener("click", function (e) {
     if (e.target.tagName === "LI") {
         e.target.classList.toggle("checked");
